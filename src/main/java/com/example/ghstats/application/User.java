@@ -1,4 +1,4 @@
-package com.example.ghstats.jax;
+package com.example.ghstats.application;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
