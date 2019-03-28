@@ -3,7 +3,7 @@ package com.example.ghstats.application;
 import com.example.ghstats.application.framework.InvokingWebClientProxyRegistrar;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.*;
+import org.springframework.context.annotation.Import;
 
 @SpringBootApplication
 @Import(InvokingWebClientProxyRegistrar.class)

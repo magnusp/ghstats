@@ -1,10 +1,12 @@
 package com.example.ghstats.github;
 
 
-import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 public class GithubUser {
     private String name;
+    private List<String> repos = new ArrayList<>();
 
     public GithubUser() {
 
@@ -20,5 +22,9 @@ public class GithubUser {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public List<String> getRepos() {
+        return repos;
     }
 }
