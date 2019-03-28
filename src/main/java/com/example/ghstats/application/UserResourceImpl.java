@@ -1,39 +1,35 @@
 package com.example.ghstats.application;
 
 
+import com.example.ghstats.application.framework.WebClientConfig;
+import com.example.ghstats.github.GithubRepo;
 import com.example.ghstats.github.GithubResource;
 import com.example.ghstats.github.GithubUser;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.support.BeanDefinitionRegistry;
-import org.springframework.context.ApplicationContext;
 import org.springframework.web.bind.annotation.RestController;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.time.Duration;
-import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalUnit;
-import java.util.concurrent.TimeUnit;
-
-import static reactor.core.publisher.Mono.just;
+import java.util.List;
 
 @RestController
 public class UserResourceImpl implements UserResource {
     private GithubResource githubResource;
+    private final WebClientConfig webClientConfig;
 
     @Autowired
-    public UserResourceImpl(GithubResource githubResource) {
+    public UserResourceImpl(GithubResource githubResource, WebClientConfig webClientConfig) {
         this.githubResource = githubResource;
+        this.webClientConfig = webClientConfig;
     }
 
     @Override
-    public Mono<GithubUser> index() {
-        /*
-        Response time in seconds should be 1 + (# of concurrent request * outgoing request latency)
-         */
-        return Mono.delay(Duration.ofSeconds(1)).flatMap(aLong -> {
-            return githubResource.request("foo").single();
+    public Mono<GithubUser> describe(String username) {
+        return Mono.zip(githubResource.fetchUser(username), githubResource.fetchRepos(username), (githubUser, githubRepos) -> {
+            githubRepos.forEach(githubRepo -> {
+                githubUser.getRepos().add(githubRepo.getName());
+            });
+            return githubUser;
         });
     }
 }

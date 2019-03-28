@@ -4,6 +4,7 @@ import com.example.ghstats.application.DemoApplication;
 import com.example.ghstats.application.UserResource;
 import com.example.ghstats.github.GithubUser;
 import org.assertj.core.api.Assertions;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,9 +25,10 @@ public class DemoApplicationTests {
     UserResource userResource;
 
     @Test
+    @Ignore("interacts with the network")
     public void canRequest() {
         webTestClient.get()
-                .uri("/api/idx")
+                .uri("/api/users/mock")
                 .accept(MediaType.APPLICATION_JSON_UTF8)
                 .exchange()
                 .expectBody(GithubUser.class)
@@ -34,12 +36,14 @@ public class DemoApplicationTests {
     }
 
     @Test
+    @Ignore("interacts with the network")
     public void canCall() {
         StepVerifier
-                .create(userResource.index())
+                .create(userResource.describe("magnusp"))
                 .expectSubscription()
                 .consumeNextWith(githubUser -> Assertions.assertThat(githubUser.getName()).isNotEmpty())
                 .verifyComplete();
     }
+
 
 }

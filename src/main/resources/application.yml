@@ -1,0 +1,2 @@
+webclient:
+  baseUrl: https://api.github.com
