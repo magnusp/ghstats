@@ -1,2 +1,5 @@
-webclient:
-  baseUrl: https://api.github.com
+web-client:
+  default-url: http://localhost
+  mapped-resource:
+    GithubResource:
+      base-url: https://api.github.com

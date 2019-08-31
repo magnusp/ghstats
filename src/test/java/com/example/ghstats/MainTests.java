@@ -1,8 +1,8 @@
 package com.example.ghstats;
 
-import com.example.ghstats.application.DemoApplication;
-import com.example.ghstats.application.UserResource;
-import com.example.ghstats.github.GithubUser;
+import se.fortnox.ghstats.Main;
+import se.fortnox.ghstats.UserResource;
+import se.fortnox.ghstats.github.GithubUser;
 import org.assertj.core.api.Assertions;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -15,8 +15,8 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.test.StepVerifier;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = {DemoApplication.class})
-public class DemoApplicationTests {
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = {Main.class})
+public class MainTests {
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     @Autowired
     private WebTestClient webTestClient;
