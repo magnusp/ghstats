@@ -29,7 +29,10 @@ public class UserResourceImpl implements UserResource {
             return githubUser;
         }).flatMap(githubUser -> {
             return Mono.subscriberContext().flatMap(context -> {
-                Span span = context.get(Span.class);
+                Span span = context.getOrDefault(Span.class, null);
+                if(span == null) {
+                    return Mono.just(githubUser);
+                }
                 Span userspace = tracer.buildSpan("userspace").asChildOf(span).start();
                 userspace.log("Some user data");
                 return Mono.just(githubUser).doOnTerminate(userspace::finish);
