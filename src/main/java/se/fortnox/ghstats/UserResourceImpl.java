@@ -5,9 +5,14 @@ import io.opentracing.Span;
 import io.opentracing.Tracer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import se.fortnox.ghstats.github.GithubResource;
 import se.fortnox.ghstats.github.GithubUser;
+
+import java.time.Duration;
+import java.time.temporal.ChronoUnit;
+import java.util.List;
 
 @RestController
 public class UserResourceImpl implements UserResource {
@@ -38,5 +43,14 @@ public class UserResourceImpl implements UserResource {
                 return Mono.just(githubUser).doOnTerminate(userspace::finish);
             });
         });
+    }
+
+    @Override
+    public Flux<GithubUser> stream() {
+        List<Mono<GithubUser>> fluxes = List.of(
+                githubResource.fetchUser("magnusp"),
+                githubResource.fetchUser("magnusp").delaySubscription(Duration.of(5, ChronoUnit.SECONDS))
+        );
+        return Flux.concat(fluxes);
     }
 }
