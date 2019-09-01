@@ -1,4 +1,4 @@
-package com.example.ghstats.application;
+package se.fortnox.ghstats;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

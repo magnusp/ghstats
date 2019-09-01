@@ -1,13 +1,10 @@
-package com.example.ghstats.application;
+package se.fortnox.ghstats;
 
-import com.example.ghstats.github.GithubRepo;
-import com.example.ghstats.github.GithubUser;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import reactor.core.publisher.Mono;
-
-import java.util.List;
+import se.fortnox.ghstats.github.GithubUser;
 
 @RequestMapping("/api")
 public interface UserResource {

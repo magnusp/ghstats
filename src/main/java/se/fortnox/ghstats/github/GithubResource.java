@@ -1,4 +1,4 @@
-package com.example.ghstats.github;
+package se.fortnox.ghstats.github;
 
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
