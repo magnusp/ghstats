@@ -3,7 +3,9 @@ package se.fortnox.ghstats;
 
 import io.opentracing.Span;
 import io.opentracing.Tracer;
+import io.r2dbc.spi.ConnectionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.r2dbc.core.DatabaseClient;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -18,11 +20,13 @@ import java.util.List;
 public class UserResourceImpl implements UserResource {
     private       GithubResource  githubResource;
     private final Tracer tracer;
+    private final ConnectionFactory connectionFactory;
 
     @Autowired
-    public UserResourceImpl(GithubResource githubResource, Tracer tracer) {
+    public UserResourceImpl(GithubResource githubResource, Tracer tracer, ConnectionFactory connectionFactory) {
         this.githubResource = githubResource;
         this.tracer = tracer;
+        this.connectionFactory = connectionFactory;
     }
 
     @Override
@@ -45,6 +49,14 @@ public class UserResourceImpl implements UserResource {
         });
     }
 
+    @Override
+    public Mono<String> doStuff() {
+        Mono<String> fetch = DatabaseClient.create(connectionFactory).execute("select 'hello' as c1;").fetch().first().map(stringObjectMap -> {
+            String c1 = (String) stringObjectMap.get("c1");
+            return c1;
+        });
+        return fetch;
+    }
     @Override
     public Flux<GithubUser> stream() {
         List<Mono<GithubUser>> fluxes = List.of(

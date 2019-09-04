@@ -14,4 +14,7 @@ public interface UserResource {
 
     @GetMapping(value = "/stream", produces = "text/event-stream")
     Flux<GithubUser> stream();
+
+    @GetMapping(value="/stuff")
+    Mono<String> doStuff();
 }
