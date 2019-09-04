@@ -51,11 +51,12 @@ public class UserResourceImpl implements UserResource {
 
     @Override
     public Mono<String> doStuff() {
-        Mono<String> fetch = DatabaseClient.create(connectionFactory).execute("select 'hello' as c1;").fetch().first().map(stringObjectMap -> {
-            String c1 = (String) stringObjectMap.get("c1");
-            return c1;
-        });
-        return fetch;
+        return DatabaseClient.create(connectionFactory)
+                .execute()
+                .sql("select 'hello' as c1;")
+                .fetch()
+                .first()
+                .map(stringObjectMap -> (String) stringObjectMap.get("c1"));
     }
     @Override
     public Flux<GithubUser> stream() {
