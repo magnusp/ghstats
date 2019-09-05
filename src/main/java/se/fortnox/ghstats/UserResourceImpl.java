@@ -5,7 +5,6 @@ import io.opentracing.Span;
 import io.opentracing.Tracer;
 import io.r2dbc.spi.ConnectionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.r2dbc.core.DatabaseClient;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -21,12 +20,14 @@ public class UserResourceImpl implements UserResource {
     private       GithubResource  githubResource;
     private final Tracer tracer;
     private final ConnectionFactory connectionFactory;
+    private final SimpleRepo simpleRepo;
 
     @Autowired
-    public UserResourceImpl(GithubResource githubResource, Tracer tracer, ConnectionFactory connectionFactory) {
+    public UserResourceImpl(GithubResource githubResource, Tracer tracer, ConnectionFactory connectionFactory, SimpleRepo simpleRepo) {
         this.githubResource = githubResource;
         this.tracer = tracer;
         this.connectionFactory = connectionFactory;
+        this.simpleRepo = simpleRepo;
     }
 
     @Override
@@ -51,12 +52,15 @@ public class UserResourceImpl implements UserResource {
 
     @Override
     public Mono<String> doStuff() {
-        return DatabaseClient.create(connectionFactory)
+        return simpleRepo.doQuery().map(simple -> {
+            return simple.getValue();
+        });
+        /*return DatabaseClient.create(connectionFactory)
                 .execute()
                 .sql("select 'hello' as c1;")
                 .fetch()
                 .first()
-                .map(stringObjectMap -> (String) stringObjectMap.get("c1"));
+                .map(stringObjectMap -> (String) stringObjectMap.get("c1"));*/
     }
     @Override
     public Flux<GithubUser> stream() {
