@@ -2,6 +2,7 @@ package se.fortnox.ghstats;
 
 import io.opentracing.Span;
 import io.opentracing.Tracer;
+import io.r2dbc.spi.ConnectionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
@@ -22,6 +23,8 @@ import java.util.function.Function;
 public class UserResourceImpl implements UserResource {
 	private       GithubResource githubResource;
 	private final Tracer         tracer;
+    private final ConnectionFactory connectionFactory;
+    private final SimpleRepo simpleRepo;
 
 	private static <T> Consumer<Signal<T>> logOnNext(Function<T, String> logStatement) {
 		return signal -> {
@@ -33,10 +36,12 @@ public class UserResourceImpl implements UserResource {
 	}
 
 	@Autowired
-	public UserResourceImpl(GithubResource githubResource, Tracer tracer) {
-		this.githubResource = githubResource;
-		this.tracer = tracer;
-	}
+	public UserResourceImpl(GithubResource githubResource, Tracer tracer, ConnectionFactory connectionFactory, SimpleRepo simpleRepo) {
+        this.githubResource = githubResource;
+        this.tracer = tracer;
+        this.connectionFactory = connectionFactory;
+        this.simpleRepo = simpleRepo;
+    }
 
 	@Override
 	public Mono<GithubUser> describe(String username) {
@@ -55,6 +60,18 @@ public class UserResourceImpl implements UserResource {
 	}
 
 	@Override
+    public Mono<String> doStuff() {
+        return simpleRepo.doQuery().map(simple -> {
+            return simple.getValue();
+        });
+        /*return DatabaseClient.create(connectionFactory)
+                .execute()
+                .sql("select 'hello' as c1;")
+                .fetch()
+                .first()
+                .map(stringObjectMap -> (String) stringObjectMap.get("c1"));*/
+    }
+    @Override
 	public Flux<GithubUser> stream() {
 		List<Mono<GithubUser>> fluxes = List.of(
 			githubResource.fetchUser("magnusp"),
